@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "project_name": "My project",
+    "project_columns": [
+      {
+        "id": 1,
+        "column_name": "Backlog",
+        "tasks": [
+          {
+            "id": 1,
+            "task_name": "my task 1"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "column_name": "In Progress",
+        "tasks": [
+          {
+            "id": 2,
+            "task_name": "my task 2"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "column_name": "Done",
+        "tasks": [
+          {
+            "id": 3,
+            "task_name": "my task 3"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "project_name": "My second project",
+    "project_columns": [
+      {
+        "id": 1,
+        "column_name": "Backlog",
+        "tasks": [
+          {
+            "id": 1,
+            "task_name": "my task 1"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "column_name": "In Progress",
+        "tasks": [
+          {
+            "id": 2,
+            "task_name": "my task 2"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "column_name": "Done",
+        "tasks": [
+          {
+            "id": 3,
+            "task_name": "my task 3"
+          }
+        ]
+      }
+    ]
+  }
+]
