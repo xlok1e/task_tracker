@@ -1,0 +1,98 @@
+#menu_add_task_btn {
+    background-color: #4F46E5;
+    border-radius: 8px;
+    height: 40px;
+}
+
+#menu_add_list_btn {
+    background-color: none;
+    border-radius: 8px;
+    height: 40px;
+    border: 1px solid #4B5563;
+}
+
+#menu {
+    background-color: #1F2937;
+}
+
+#main_content {
+    background-color: #111827;
+}
+
+#task_card {
+    background-color: #374151;
+    color: white;
+    border-radius: 8px;
+    min-height: 136px;
+    max-height: 136px;
+    margin: 10px 10px 0 10px;
+    padding: 10px;
+}
+
+#column_backlog, #layout_backlog, #backlog {
+    background-color: #1F2937;
+    border-radius: 8px;
+}
+
+#column_done, #layout_done, #done {
+    background-color: #1F2937;
+    border-radius: 8px;
+}
+
+#column_todo, #layout_todo, #todo {
+    background-color: #1F2937;
+    border-radius: 8px;
+}
+
+#add_task_to_backlog, #add_task_to_inprogress, #add_task_to_done {
+    min-width: 25px;
+    max-width: 25px;
+    min-height: 25px;
+    max-height: 25px;
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    color: #9CA3AF;
+    font-weight: 600;
+    border-radius: 4px;
+}
+
+#add_task_to_backlog:hover,
+#add_task_to_inprogress:hover,
+#add_task_to_done:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+
+/* Модальные окна */
+QDialog {
+    width: 300px;
+    height: 200px;
+    background-color: #2D2D30;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+QDialog QLineEdit {
+    background-color: #1E1E1E;
+    border: 1px solid #4F46E5;
+    border-radius: 5px;
+    padding: 6px;
+    color: #FFFFFF;
+}
+
+QDialog QDialogButtonBox QPushButton {
+    background-color: #4F46E5;
+    border: none;
+    color: #FFFFFF;
+    padding: 8px 16px;
+    border-radius: 5px;
+}
+
+QDialog QDialogButtonBox QPushButton:hover {
+    background-color: #6B7280;
+}
+
+QDialog QDialogButtonBox QPushButton:pressed {
+    background-color: #3B82F6;
+}
