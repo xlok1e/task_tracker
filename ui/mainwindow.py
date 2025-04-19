@@ -1,5 +1,5 @@
 from PySide6.QtCore import Qt, QEvent
-from PySide6.QtWidgets import QMainWindow, QPushButton, QDialog
+from PySide6.QtWidgets import QMainWindow, QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QWidget, QSizePolicy
 
 from utils.task_manager import TaskManager
 from .ui_mainwindow import Ui_Form
@@ -11,6 +11,11 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.ui = Ui_Form()
         self.ui.setupUi(self)
+
+        self.setWindowFlags(Qt.Window)
+        self.setMinimumSize(900, 700)
+
+        self._setup_resizable_layout()
 
         self.task_manager = TaskManager("models/main.json")
 
@@ -29,6 +34,31 @@ class MainWindow(QMainWindow):
         self._setup_drag_drop()
 
         self._populate_tasks()
+
+    def _setup_resizable_layout(self):
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        
+        main_layout = QHBoxLayout(central_widget)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
+        
+        main_layout.addWidget(self.ui.menu)
+        main_layout.addWidget(self.ui.main_content)
+        
+        self.ui.project_page.setLayout(QVBoxLayout())
+        self.ui.project_page.layout().setContentsMargins(20, 20, 20, 20)
+        self.ui.project_page.layout().setSpacing(20)
+        
+        self.ui.project_page.layout().addWidget(self.ui.widget)
+        
+        board_container = QWidget()
+        board_container.setLayout(self.ui.layout_board)
+        self.ui.project_page.layout().addWidget(board_container)
+        
+        self.ui.backlog.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.ui.todo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.ui.done.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
     def _update_header(self):
         name = self.project.get("project_name", "Без имени")
