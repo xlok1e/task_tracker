@@ -38,7 +38,7 @@ class TaskManager:
                 return column
         return None
 
-    def add_task(self, project_id: int, column_id: int, task_name: str):
+    def add_task(self, project_id: int, column_id: int, task_name: str, description: str, priority: int):
         col = self.get_column(project_id, column_id)
 
         if col is None:
@@ -52,7 +52,7 @@ class TaskManager:
                         max_id = t["id"]
         new_id = max_id + 1
 
-        task = {"id": new_id, "task_name": task_name}
+        task = {"id": new_id, "task_name": task_name, "description": description, "priority": priority}
         col['tasks'].append(task)
         self._save()
         return task

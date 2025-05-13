@@ -12,7 +12,7 @@ class MainWindow(QMainWindow):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
 
-        self.setWindowFlags(Qt.Window)
+        self.setWindowFlags(Qt.WindowType.Window)
         self.setMinimumSize(900, 700)
 
         self._setup_resizable_layout()
@@ -26,9 +26,6 @@ class MainWindow(QMainWindow):
             # todo Тут надо выводить экран без проектов
             print('No projects')
 
-        print("Loading JSON from:", self.task_manager.json_file.resolve())
-        print("Loaded data:", self.task_manager.data)
-
         self._setup_ui()
         self._setup_events()
         self._setup_drag_drop()
@@ -38,44 +35,45 @@ class MainWindow(QMainWindow):
     def _setup_resizable_layout(self):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
-        
+
         main_layout = QHBoxLayout(central_widget)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
-        
+
         main_layout.addWidget(self.ui.menu)
         main_layout.addWidget(self.ui.main_content)
-        
-        self.ui.project_page.setLayout(QVBoxLayout())
-        self.ui.project_page.layout().setContentsMargins(20, 20, 20, 20)
-        self.ui.project_page.layout().setSpacing(20)
-        
-        self.ui.project_page.layout().addWidget(self.ui.widget)
-        
+
+        project_layout = QVBoxLayout()
+        project_layout.setContentsMargins(20, 20, 20, 20)
+        project_layout.setSpacing(20)
+        self.ui.project_page.setLayout(project_layout)
+
+        project_layout.addWidget(self.ui.widget)
+
         board_container = QWidget()
         board_container.setLayout(self.ui.layout_board)
-        self.ui.project_page.layout().addWidget(board_container)
-        
-        self.ui.backlog.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.ui.todo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.ui.done.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        project_layout.addWidget(board_container)
+
+        self.ui.backlog.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.ui.todo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.ui.done.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
     def _update_header(self):
         name = self.project.get("project_name", "Без имени")
         self.ui.list_name_text.setText(name)
 
     def _populate_tasks(self):
-        for col in self.project['project_columns']:
-            col_id = col['id']
+            for col in self.project['project_columns']:
+                col_id = col['id']
 
-            layout = self._get_layout_by_column_id(col_id)
-            if layout is None:
-                continue
+                layout = self._get_layout_by_column_id(col_id)
+                if layout is None:
+                    continue
 
-            for task in col['tasks']:
-                card = self.add_task_to_layout(layout, task['task_name'])
-                card.task_id = task['id']
-                card.column_id = col_id
+                for task in col['tasks']:
+                    card = self.add_task_to_layout(layout, task['task_name'], task['description'], task['priority'])
+                    setattr(card, 'task_id', task['id'])
+                    setattr(card, 'column_id', col_id)
 
     def _get_layout_by_column_id(self, col_id):
         if col_id == 1:
@@ -90,7 +88,7 @@ class MainWindow(QMainWindow):
 
     def _setup_ui(self):
         for button in self.findChildren(QPushButton):
-            button.setCursor(Qt.PointingHandCursor)
+            button.setCursor(Qt.CursorShape.PointingHandCursor)
 
         self.ui.column_backlog.setLayout(self.ui.layout_backlog)
         self.ui.column_todo.setLayout(self.ui.layout_todo)
@@ -100,9 +98,9 @@ class MainWindow(QMainWindow):
         self.todo_layout = self.ui.layout_todo
         self.done_layout = self.ui.layout_done
 
-        self.backlog_layout.setAlignment(Qt.AlignTop)
-        self.todo_layout.setAlignment(Qt.AlignTop)
-        self.done_layout.setAlignment(Qt.AlignTop)
+        self.backlog_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.todo_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.done_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
     def _setup_events(self):
         self.ui.add_task_to_backlog.clicked.connect(self.add_new_task_to_backlog)
@@ -118,8 +116,8 @@ class MainWindow(QMainWindow):
         self.ui.column_todo.installEventFilter(self)
         self.ui.column_done.installEventFilter(self)
 
-    def add_task_to_layout(self, layout, text: str):
-        task = TaskCard(text)
+    def add_task_to_layout(self, layout, text: str, description: str, priority: int):
+        task = TaskCard(text, description, priority)
         layout.addWidget(task)
         return task
 
@@ -134,21 +132,31 @@ class MainWindow(QMainWindow):
 
     def _add_new_task(self, layout, column_id: int):
         dialog = AddTaskDialog(self)
-        if dialog.exec() != QDialog.Accepted:
+
+        if dialog.exec() != QDialog.DialogCode.Accepted:
             return
+
         text = dialog.get_task_text().strip()
+        description = dialog.get_description()
+        priority = dialog.get_priority()
+
+        print(f"Добавляем задачу с приоритетом: {priority}")
+
         if not text:
             return
 
         new_task = self.task_manager.add_task(
             self.project["id"],
             column_id,
-            text
+            text,
+            description,
+            priority
         )
 
-        card = self.add_task_to_layout(layout, new_task["task_name"])
-        card.task_id = new_task["id"]
-        card.column_id = column_id
+        print(f"Задача добавлена с приоритетом: {new_task['priority']}")
+        card = self.add_task_to_layout(layout, new_task["task_name"], new_task["description"], new_task["priority"])
+        setattr(card, 'task_id', new_task["id"])
+        setattr(card, 'column_id', column_id)
 
     def _get_column_id_by_watched(self, watched):
         if watched == self.ui.column_backlog:
@@ -161,16 +169,16 @@ class MainWindow(QMainWindow):
 
 
     def eventFilter(self, watched, event):
-        if event.type() == QEvent.DragEnter:
+        if event.type() == QEvent.Type.DragEnter:
             if event.mimeData().hasText():
                 event.acceptProposedAction()
                 return True
 
-        elif event.type() == QEvent.Drop:
+        elif event.type() == QEvent.Type.Drop:
             if event.mimeData().hasText():
-                task_text = event.mimeData().text()
+                pass
 
-        if event.type() == QEvent.Drop and event.mimeData().hasText():
+        if event.type() == QEvent.Type.Drop and event.mimeData().hasText():
             source_card = event.source()
             target_column = self._get_column_id_by_watched(watched)
             source_column = getattr(source_card, "column_id", None)
@@ -181,15 +189,20 @@ class MainWindow(QMainWindow):
                 self.project["id"],
                 source_column,
                 target_column,
-                source_card.task_id
+                getattr(source_card, 'task_id')
             )
             if not moved:
                 return super().eventFilter(watched, event)
 
             target_layout = self._get_layout_by_column_id(target_column)
-            new_card = self.add_task_to_layout(target_layout, source_card.text())
-            new_card.task_id = source_card.task_id
-            new_card.column_id = target_column
+            new_card = self.add_task_to_layout(
+                target_layout,
+                source_card.title_label.text(),
+                source_card.description_label.text(),
+                self._get_priority_number(source_card.priority_label.text().split(": ")[1])
+            )
+            setattr(new_card, 'task_id', getattr(source_card, 'task_id'))
+            setattr(new_card, 'column_id', target_column)
 
             self._remove_source_card(event)
 
@@ -197,6 +210,15 @@ class MainWindow(QMainWindow):
             return True
 
         return super().eventFilter(watched, event)
+
+    def _get_priority_number(self, priority_text):
+        priority_map = {
+            "Низкий": 1,
+            "Средний": 2,
+            "Высокий": 3,
+            "Не задан": 0
+        }
+        return priority_map.get(priority_text, 0)
 
     def _get_target_layout(self, watched):
         if watched == self.ui.column_backlog:
@@ -208,9 +230,11 @@ class MainWindow(QMainWindow):
         return None
 
     def _remove_source_card(self, event):
-        source_widget = event.source()
-        if source_widget and isinstance(source_widget, TaskCard):
-            parent_layout = source_widget.parent().layout()
-            if parent_layout:
-                parent_layout.removeWidget(source_widget)
-                source_widget.deleteLater()
+            source_widget = event.source()
+            if source_widget and isinstance(source_widget, TaskCard):
+                parent = source_widget.parent()
+                if parent:
+                    layout = parent.layout()
+                    if layout:
+                        layout.removeWidget(source_widget)
+                        source_widget.deleteLater()
