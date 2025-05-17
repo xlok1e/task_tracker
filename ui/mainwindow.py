@@ -1,5 +1,5 @@
 from PySide6.QtCore import Qt, QEvent
-from PySide6.QtWidgets import QMainWindow, QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QWidget, QSizePolicy
+from PySide6.QtWidgets import QMainWindow, QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QWidget, QSizePolicy, QTextEdit
 
 from utils.task_manager import TaskManager
 from .ui_mainwindow import Ui_Form
@@ -13,7 +13,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
 
         self.setWindowFlags(Qt.WindowType.Window)
-        self.setMinimumSize(900, 700)
+        self.setMinimumSize(1600, 900)
 
         self._setup_resizable_layout()
 
@@ -198,8 +198,8 @@ class MainWindow(QMainWindow):
             new_card = self.add_task_to_layout(
                 target_layout,
                 source_card.title_label.text(),
-                source_card.description_label.text(),
-                self._get_priority_number(source_card.priority_label.text().split(": ")[1])
+                source_card.description_label.toPlainText() if hasattr(source_card.description_label, 'toPlainText') else source_card.description_label.text(),
+                self._get_priority_number(source_card.priority_label.text())
             )
             setattr(new_card, 'task_id', getattr(source_card, 'task_id'))
             setattr(new_card, 'column_id', target_column)
