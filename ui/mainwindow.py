@@ -11,9 +11,11 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.ui = Ui_Form()
         self.ui.setupUi(self)
+        self.setWindowTitle("Task Manager")
 
         self.setWindowFlags(Qt.WindowType.Window)
         self.setMinimumSize(1600, 900)
+        self.showMaximized()
 
         self._setup_resizable_layout()
 
@@ -71,7 +73,7 @@ class MainWindow(QMainWindow):
                     continue
 
                 for task in col['tasks']:
-                    card = self.add_task_to_layout(layout, task['task_name'], task['description'], task['priority'])
+                    card = self.add_task_to_layout(layout, task['task_name'], task['description'], task['priority'], task['date'])
                     setattr(card, 'task_id', task['id'])
                     setattr(card, 'column_id', col_id)
 
@@ -116,8 +118,8 @@ class MainWindow(QMainWindow):
         self.ui.column_todo.installEventFilter(self)
         self.ui.column_done.installEventFilter(self)
 
-    def add_task_to_layout(self, layout, text: str, description: str, priority: int):
-        task = TaskCard(text, description, priority)
+    def add_task_to_layout(self, layout, text: str, description: str, priority: int, date: str):
+        task = TaskCard(text, description, priority, date)
         layout.addWidget(task)
         return task
 
@@ -139,7 +141,7 @@ class MainWindow(QMainWindow):
         text = dialog.get_task_text().strip()
         description = dialog.get_description()
         priority = dialog.get_priority()
-
+        date = dialog.get_date()
         print(f"Добавляем задачу с приоритетом: {priority}")
 
         if not text:
@@ -150,11 +152,11 @@ class MainWindow(QMainWindow):
             column_id,
             text,
             description,
-            priority
+            priority,
+            date
         )
 
-        print(f"Задача добавлена с приоритетом: {new_task['priority']}")
-        card = self.add_task_to_layout(layout, new_task["task_name"], new_task["description"], new_task["priority"])
+        card = self.add_task_to_layout(layout, new_task["task_name"], new_task["description"], new_task["priority"], new_task["date"])
         setattr(card, 'task_id', new_task["id"])
         setattr(card, 'column_id', column_id)
 
@@ -199,7 +201,8 @@ class MainWindow(QMainWindow):
                 target_layout,
                 source_card.title_label.text(),
                 source_card.description_label.toPlainText() if hasattr(source_card.description_label, 'toPlainText') else source_card.description_label.text(),
-                self._get_priority_number(source_card.priority_label.text())
+                self._get_priority_number(source_card.priority_label.text()),
+                source_card.date_label.text()
             )
             setattr(new_card, 'task_id', getattr(source_card, 'task_id'))
             setattr(new_card, 'column_id', target_column)

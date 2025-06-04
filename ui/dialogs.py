@@ -1,11 +1,12 @@
-from PySide6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QComboBox, QTextEdit
+from PySide6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QDialogButtonBox, QComboBox, QTextEdit, QDateEdit
+from PySide6.QtCore import QDate
 
 
 class AddTaskDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle('Добавить новую задачу')
-        self.setFixedSize(500, 250)
+        self.setFixedSize(500, 300)
         # todo убрать возможность ставить весь экран
         self.init_ui()
 
@@ -16,6 +17,13 @@ class AddTaskDialog(QDialog):
         self.name_field = QLineEdit(self)
         self.name_field.setPlaceholderText("Введите название задачи")
         layout.addWidget(self.name_field)
+
+        self.date_field = QDateEdit(self)
+        self.date_field.setCalendarPopup(True)
+        self.date_field.setDate(QDate.currentDate())
+        self.date_field.setDisplayFormat("dd.MM.yyyy")
+        self.date_field.setCalendarPopup(True)
+        layout.addWidget(self.date_field)
 
         self.priority_select = QComboBox(self)
         self.priority_select.addItems(["Не задан", "Низкий", "Средний", "Высокий"])
@@ -53,3 +61,6 @@ class AddTaskDialog(QDialog):
             "Высокий": 3
         }
         return priority_map.get(priority_text, 0)
+    
+    def get_date(self):
+        return self.date_field.date().toString("yyyy-MM-dd")

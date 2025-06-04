@@ -10,20 +10,16 @@
           {
             "id": 13,
             "task_name": "Созвониться с менеджером по продажам Олегом",
-            "description": "213\n",
-            "priority": 3
+            "description": "Телефон: +79097648856. Уточнить про последние правки в проекте",
+            "priority": 3,
+            "date": ""
           },
           {
             "id": 14,
-            "task_name": "mid pr",
-            "description": "123",
-            "priority": 2
-          },
-          {
-            "id": 7,
-            "task_name": "task",
-            "description": "123456",
-            "priority": 0
+            "task_name": "Заказать новую поставку продукта",
+            "description": "Со склада в Новосибирске. +79225456733",
+            "priority": 2,
+            "date": "2025-06-04"
           }
         ]
       },
@@ -32,16 +28,18 @@
         "column_name": "In Progress",
         "tasks": [
           {
-            "id": 6,
-            "task_name": "задача123123123 банан 12312sdbvhdshsdfhsdjkfh bananaaa",
+            "id": 16,
+            "task_name": "Проверить разработку странцы заказов",
+            "description": "",
             "priority": 3,
-            "description": "description 3"
+            "date": "2025-06-04"
           },
           {
-            "id": 15,
-            "task_name": "low pr",
-            "description": "jhjashdjsahdashcjsahdjkhasdjkhsauihcjabscsabcuisabcsacsahjcbsahcbsacsacbsacsacbscbsaycbasyucbsayucbsayucbsaucb",
-            "priority": 1
+            "id": 17,
+            "task_name": "213",
+            "description": "",
+            "priority": 0,
+            "date": "2025-06-08"
           }
         ]
       },
@@ -50,10 +48,11 @@
         "column_name": "Done",
         "tasks": [
           {
-            "id": 12,
-            "task_name": "ne",
-            "description": "uvg",
-            "priority": 2
+            "id": 15,
+            "task_name": "Встретиться с Викторией",
+            "description": "Улица Пушкина дом Колотушкина 52",
+            "priority": 0,
+            "date": "2025-06-04"
           }
         ]
       }

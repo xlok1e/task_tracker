@@ -4,25 +4,25 @@ from PySide6.QtCore import QMimeData
 from PySide6.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QHBoxLayout, QLabel, QApplication, QSizePolicy
 
 class TaskCard(QWidget):
-    def __init__(self, title: str, description: str, priority: int):
+    def __init__(self, title: str, description: str, priority: int, date: str):
             super().__init__()
 
             self.setObjectName("task_card")
             self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
             self._original_description = description
             self.priority_value = priority
-
+            self.date_value = date
             self.setMinimumWidth(200)
-            self.setMaximumHeight(150)
+            self.setMaximumHeight(100)
 
             layout = QVBoxLayout()
-            layout.setContentsMargins(25, 25, 25, 25)
+            layout.setContentsMargins(25, 25, 25, 20)
 
             header_layout = QHBoxLayout()
             header_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
             header_layout.setContentsMargins(0, 0, 0, 0)
 
-            short_title = self._trim_text(title, 25)
+            short_title = self._trim_text(title, 30)
             self.title_label = QLabel(short_title)
             self.title_label.setObjectName("task_card_title")
             self.title_label.setWordWrap(False)
@@ -39,12 +39,19 @@ class TaskCard(QWidget):
                 margin-left: auto;
             """)
 
+            self.date_label = QLabel(self.get_date_format(date))
+            self.date_label.setObjectName("task_card_date")
+            self.date_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+            self.date_label.setStyleSheet("""
+                color: #9CA3AF;
+            """)
+
             header_layout.addWidget(self.title_label)
             header_layout.addStretch(1)
-            header_layout.addWidget(self.priority_label)
+            header_layout.addWidget(self.priority_label)           
 
             short_description = self._trim_text(description, 65)
-            self.description_label = QTextEdit(short_description)
+            self.description_label = QTextEdit(short_description or 'Описание не задано')
             self.description_label.setObjectName("task_card_description")
             self.description_label.setReadOnly(True)
             self.description_label.setFrameShape(QTextEdit.Shape.NoFrame)
@@ -59,6 +66,7 @@ class TaskCard(QWidget):
 
             layout.addLayout(header_layout)
             layout.addWidget(self.description_label)
+            layout.addWidget(self.date_label)
             layout.addStretch(1)
 
             self.setLayout(layout)
@@ -143,3 +151,18 @@ class TaskCard(QWidget):
                 return "#9E9E9E"
             case _:
                 return "#9E9E9E"
+
+    def get_date_format(self, date):
+        if not date:
+            return "Дата не задана"
+        try:
+            from datetime import datetime
+            date_obj = datetime.strptime(date, "%Y-%m-%d")
+            months = {
+                1: "января", 2: "февраля", 3: "марта", 4: "апреля",
+                5: "мая", 6: "июня", 7: "июля", 8: "августа",
+                9: "сентября", 10: "октября", 11: "ноября", 12: "декабря"
+            }
+            return f"До {date_obj.day} {months[date_obj.month]} {date_obj.year}"
+        except:
+            return date

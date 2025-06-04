@@ -1,150 +1,168 @@
-  QScrollBar:vertical {
-    background-color: #1F2937;
-    width: 10px;
-    margin: 0px;
-    border-radius: 5px;
+QScrollBar:vertical {
+  background-color: #1f2937;
+  width: 10px;
+  margin: 0px;
+  border-radius: 5px;
 }
 QScrollBar::handle:vertical {
-    background-color: #4B5563;
-    min-height: 30px;
-    border-radius: 5px;
+  background-color: #4b5563;
+  min-height: 30px;
+  border-radius: 5px;
 }
 QScrollBar::handle:vertical:hover {
-    background-color: #6B7280;
+  background-color: #6b7280;
 }
-QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
-    height: 0px;
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+  height: 0px;
 }
-QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
-    background: none;
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+  background: none;
 }
 
 #menu_add_task_btn {
-    background-color: #4F46E5;
-    border-radius: 8px;
-    height: 40px;
+  background-color: #4f46e5;
+  border-radius: 8px;
+  height: 40px;
 }
 
 #menu_add_list_btn {
-    background-color: none;
-    border-radius: 8px;
-    height: 40px;
-    border: 1px solid #4B5563;
+  background-color: none;
+  border-radius: 8px;
+  height: 40px;
+  border: 1px solid #4b5563;
 }
 
 #menu {
-    background-color: #1F2937;
+  background-color: #1f2937;
 }
 
 #main_content {
-    background-color: #111827;
+  background-color: #111827;
 }
 
 #task_card {
-    background-color: #374151;
-    color: white;
-    border-radius: 8px;
-    min-height: 136px;
-    max-height: 136px;
-    margin: 10px 10px 0 10px;
-    padding: 10px;
+  background-color: #374151;
+  color: white;
+  border-radius: 8px;
+  min-height: 95px;
+  max-height: 95px;
+  margin: 10px 10px 0 10px;
+  padding: 10px;
 }
 
 #task_card_title {
-    font-weight: bold;
-    font-size: 16px
+  font-weight: bold;
+  font-size: 16px;
 }
 
 #task_card_priority {
-    font-size: 14px
+  font-size: 14px;
 }
 
-#column_backlog, #layout_backlog, #backlog {
-    background-color: #1F2937;
-    border-radius: 8px;
+#column_backlog,
+#layout_backlog,
+#backlog {
+  background-color: #1f2937;
+  border-radius: 8px;
 }
 
-#column_done, #layout_done, #done {
-    background-color: #1F2937;
-    border-radius: 8px;
+#column_done,
+#layout_done,
+#done {
+  background-color: #1f2937;
+  border-radius: 8px;
 }
 
-#column_todo, #layout_todo, #todo {
-    background-color: #1F2937;
-    border-radius: 8px;
+#column_todo,
+#layout_todo,
+#todo {
+  background-color: #1f2937;
+  border-radius: 8px;
 }
 
-#add_task_to_backlog, #add_task_to_inprogress, #add_task_to_done {
-    min-width: 25px;
-    max-width: 25px;
-    min-height: 25px;
-    max-height: 25px;
-    background-color: transparent;
-    border: none;
-    font-size: 20px;
-    color: #9CA3AF;
-    font-weight: 600;
-    border-radius: 4px;
+#add_task_to_backlog,
+#add_task_to_inprogress,
+#add_task_to_done {
+  min-width: 25px;
+  max-width: 25px;
+  min-height: 25px;
+  max-height: 25px;
+  background-color: transparent;
+  border: none;
+  font-size: 20px;
+  color: #9ca3af;
+  font-weight: 600;
+  border-radius: 4px;
 }
 
 #add_task_to_backlog:hover,
 #add_task_to_inprogress:hover,
 #add_task_to_done:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 #edit_list_btn {
-    background-color: #4F46E5;
-    border-radius: 6px;
-    height: 20px;
-    padding: 8px 12px;
+  background-color: #4f46e5;
+  border-radius: 6px;
+  height: 20px;
+  padding: 8px 12px;
 }
 
 /* Модальные окна */
 QDialog {
-    width: 300px;
-    height: 200px;
-    background-color: #2D2D30;
-    border-radius: 10px;
-    padding: 20px;
+  width: 300px;
+  height: 200px;
+  background-color: #2d2d30;
+  border-radius: 10px;
+  padding: 20px;
 }
 
 QDialog QLineEdit {
-    background-color: #1E1E1E;
-    border: 1px solid #4F46E5;
-    border-radius: 5px;
-    padding: 6px;
-    color: #FFFFFF;
+  background-color: #1e1e1e;
+  border: 1px solid #4f46e5;
+  border-radius: 5px;
+  padding: 6px;
+  color: #ffffff;
 }
 
 QDialog QTextEdit {
-    background-color: #1E1E1E;
-    border: 1px solid #4F46E5;
-    border-radius: 5px;
-    padding: 6px;
-    color: #FFFFFF;
+  background-color: #1e1e1e;
+  border: 1px solid #4f46e5;
+  border-radius: 5px;
+  padding: 6px;
+  color: #ffffff;
+}
+
+QDialog QDateEdit {
+  background-color: #1e1e1e;
+  border: 1px solid #4f46e5;
+  border-radius: 5px;
+  padding: 6px;
+  color: #ffffff;
 }
 
 QDialog QDialogButtonBox QPushButton {
-    background-color: #4F46E5;
-    border: none;
-    color: #FFFFFF;
-    padding: 8px 16px;
-    border-radius: 5px;
+  background-color: #4f46e5;
+  border: none;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 5px;
 }
 
 QDialog QDialogButtonBox QPushButton:hover {
-    background-color: #6B7280;
+  background-color: #6b7280;
 }
 
 QDialog QDialogButtonBox QPushButton:pressed {
-    background-color: #3B82F6;
+  background-color: #3b82f6;
 }
 
 QDialog QComboBox {
-    background-color: #1E1E1E;
-    border: 1px solid #4F46E5;
-    border-radius: 5px;
-    padding: 6px;
-    color: #FFFFFF;
+  background-color: #1e1e1e;
+  border: 1px solid #4f46e5;
+  border-radius: 5px;
+  padding: 6px;
+  color: #ffffff;
 }
