@@ -2,6 +2,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QDrag
 from PySide6.QtCore import QMimeData
 from PySide6.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QHBoxLayout, QLabel, QApplication, QSizePolicy
+from ui.dialogs.task_info_dialog import TaskInfoDialog
 
 class TaskCard(QWidget):
     def __init__(self, title: str, description: str, priority: int, date: str):
@@ -10,10 +11,12 @@ class TaskCard(QWidget):
             self.setObjectName("task_card")
             self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
             self._original_description = description
+            self._original_title = title
             self.priority_value = priority
             self.date_value = date
             self.setMinimumWidth(200)
             self.setMaximumHeight(100)
+            self.is_dragging = False
 
             layout = QVBoxLayout()
             layout.setContentsMargins(25, 25, 25, 20)
@@ -93,6 +96,8 @@ class TaskCard(QWidget):
 
             self.setCursor(Qt.CursorShape.PointingHandCursor)
             self.setAcceptDrops(False)
+            # self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+            # self.customContextMenuRequested.connect(self.show_task_info)
 
     def text(self):
         return self._original_description
@@ -100,6 +105,7 @@ class TaskCard(QWidget):
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
             self.drag_start_position = event.position().toPoint()
+            self.is_dragging = False
 
     def mouseMoveEvent(self, event):
         if not (event.buttons() & Qt.MouseButton.LeftButton):
@@ -108,6 +114,7 @@ class TaskCard(QWidget):
         if (event.position().toPoint() - self.drag_start_position).manhattanLength() < QApplication.startDragDistance():
             return
 
+        self.is_dragging = True
         drag = QDrag(self)
         mime_data = QMimeData()
         mime_data.setText(self.title_label.text())
@@ -120,6 +127,10 @@ class TaskCard(QWidget):
 
         if drop_action == Qt.DropAction.MoveAction:
             self.hide()
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.MouseButton.LeftButton and not self.is_dragging:
+            self.show_task_info()
 
     def _trim_text(self, text, max_length=100):
             if len(text) <= max_length:
@@ -166,3 +177,7 @@ class TaskCard(QWidget):
             return f"До {date_obj.day} {months[date_obj.month]} {date_obj.year}"
         except:
             return date
+        
+    def show_task_info(self):
+        dialog = TaskInfoDialog(self, self._original_title, self._original_description, self.priority_label.text(), self.date_label.text())
+        dialog.exec()

@@ -7,7 +7,7 @@ class AddTaskDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle('Добавить новую задачу')
         self.setFixedSize(500, 300)
-        # todo убрать возможность ставить весь экран
+        # TODO убрать возможность ставить весь экран
         self.init_ui()
 
     def init_ui(self):

@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QMainWindow, QPushButton, QDialog, QVBoxLayout, QH
 from utils.task_manager import TaskManager
 from .ui_mainwindow import Ui_Form
 from .task_card import TaskCard
-from .dialogs import AddTaskDialog
+from .dialogs.add_task_dialog import AddTaskDialog
 
 class MainWindow(QMainWindow):
     def __init__(self):
