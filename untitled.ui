@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1187</width>
-    <height>757</height>
+    <height>754</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,7 +61,7 @@
          <x>0</x>
          <y>0</y>
          <width>251</width>
-         <height>281</height>
+         <height>751</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -71,7 +71,7 @@
         <item>
          <layout class="QVBoxLayout" name="layout_add_btn">
           <property name="spacing">
-           <number>0</number>
+           <number>8</number>
           </property>
           <property name="leftMargin">
            <number>12</number>
@@ -86,7 +86,7 @@
            <number>12</number>
           </property>
           <item>
-           <widget class="QPushButton" name="menu_add_task_btn">
+           <widget class="QPushButton" name="menu_add_list_btn">
             <property name="layoutDirection">
              <enum>Qt::LayoutDirection::LeftToRight</enum>
             </property>
@@ -97,7 +97,7 @@
              <string notr="true"/>
             </property>
             <property name="text">
-             <string>Добавить задачу</string>
+             <string>Добавить проект</string>
             </property>
            </widget>
           </item>
@@ -124,24 +124,25 @@
 font-weight: 500;</string>
             </property>
             <property name="text">
-             <string>Мои списки</string>
+             <string>Мои проекты</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="menu_add_list_btn">
-            <property name="layoutDirection">
-             <enum>Qt::LayoutDirection::LeftToRight</enum>
+           <widget class="QScrollArea" name="all_lists_area">
+            <property name="widgetResizable">
+             <bool>true</bool>
             </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="text">
-             <string>Добавить список</string>
-            </property>
+            <widget class="QWidget" name="scrollAreaWidgetContents">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>223</width>
+               <height>601</height>
+              </rect>
+             </property>
+            </widget>
            </widget>
           </item>
          </layout>
@@ -156,7 +157,7 @@ font-weight: 500;</string>
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="project_page">
        <widget class="QWidget" name="horizontalLayoutWidget">
@@ -402,7 +403,7 @@ font-size: 16px;</string>
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>21</x>
@@ -433,29 +434,98 @@ font-size: 24px;</string>
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Редактировать список</string>
+            <string>Редактировать проект</string>
            </property>
           </widget>
          </item>
         </layout>
        </widget>
       </widget>
-      <widget class="QWidget" name="page_2">
-       <widget class="QLabel" name="label_2">
+      <widget class="QWidget" name="no_lists_page">
+       <widget class="QWidget" name="verticalLayoutWidget">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>10</y>
-          <width>66</width>
-          <height>91</height>
+          <x>40</x>
+          <y>280</y>
+          <width>851</width>
+          <height>182</height>
          </rect>
         </property>
-        <property name="styleSheet">
-         <string notr="true">font: 48pt &quot;Ubuntu Sans&quot;;</string>
-        </property>
-        <property name="text">
-         <string>2</string>
-        </property>
+        <layout class="QVBoxLayout" name="no_lists_layout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+         </property>
+         <item>
+          <widget class="QLabel" name="welcome_label">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>100</height>
+            </size>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LayoutDirection::LeftToRight</enum>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 48pt &quot;Google Sans&quot;;
+font-weight: 500;</string>
+           </property>
+           <property name="text">
+            <string>Добро пожаловать!</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="welcome_label_2">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>100</height>
+            </size>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LayoutDirection::LeftToRight</enum>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 20pt &quot;Google Sans&quot;;</string>
+           </property>
+           <property name="text">
+            <string>Начните с добавления первого проекта</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="main_screen_add_project_btn">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LayoutDirection::LeftToRight</enum>
+           </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string>Добавить проект</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </widget>
      </widget>

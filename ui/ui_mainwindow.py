@@ -15,15 +15,15 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QPushButton,
-    QScrollArea, QSizePolicy, QStackedWidget, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QLayout,
+    QPushButton, QScrollArea, QSizePolicy, QStackedWidget,
+    QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(1187, 757)
+        Form.resize(1187, 754)
         self.central_widget = QWidget(Form)
         self.central_widget.setObjectName(u"central_widget")
         self.central_widget.setGeometry(QRect(0, 0, 1191, 761))
@@ -42,22 +42,22 @@ class Ui_Form(object):
         self.menu.setStyleSheet(u"")
         self.layoutWidget = QWidget(self.menu)
         self.layoutWidget.setObjectName(u"layoutWidget")
-        self.layoutWidget.setGeometry(QRect(0, 0, 251, 281))
+        self.layoutWidget.setGeometry(QRect(0, 0, 251, 751))
         self.verticalLayout_3 = QVBoxLayout(self.layoutWidget)
         self.verticalLayout_3.setSpacing(48)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.layout_add_btn = QVBoxLayout()
-        self.layout_add_btn.setSpacing(0)
+        self.layout_add_btn.setSpacing(8)
         self.layout_add_btn.setObjectName(u"layout_add_btn")
         self.layout_add_btn.setContentsMargins(12, 12, 12, 12)
-        self.menu_add_task_btn = QPushButton(self.layoutWidget)
-        self.menu_add_task_btn.setObjectName(u"menu_add_task_btn")
-        self.menu_add_task_btn.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
-        self.menu_add_task_btn.setAutoFillBackground(False)
-        self.menu_add_task_btn.setStyleSheet(u"")
+        self.menu_add_list_btn = QPushButton(self.layoutWidget)
+        self.menu_add_list_btn.setObjectName(u"menu_add_list_btn")
+        self.menu_add_list_btn.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
+        self.menu_add_list_btn.setAutoFillBackground(False)
+        self.menu_add_list_btn.setStyleSheet(u"")
 
-        self.layout_add_btn.addWidget(self.menu_add_task_btn)
+        self.layout_add_btn.addWidget(self.menu_add_list_btn)
 
 
         self.verticalLayout_3.addLayout(self.layout_add_btn)
@@ -72,13 +72,15 @@ class Ui_Form(object):
 
         self.layout_lists.addWidget(self.my_lists_text)
 
-        self.menu_add_list_btn = QPushButton(self.layoutWidget)
-        self.menu_add_list_btn.setObjectName(u"menu_add_list_btn")
-        self.menu_add_list_btn.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
-        self.menu_add_list_btn.setAutoFillBackground(False)
-        self.menu_add_list_btn.setStyleSheet(u"")
+        self.all_lists_area = QScrollArea(self.layoutWidget)
+        self.all_lists_area.setObjectName(u"all_lists_area")
+        self.all_lists_area.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QWidget()
+        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 223, 601))
+        self.all_lists_area.setWidget(self.scrollAreaWidgetContents)
 
-        self.layout_lists.addWidget(self.menu_add_list_btn)
+        self.layout_lists.addWidget(self.all_lists_area)
 
 
         self.verticalLayout_3.addLayout(self.layout_lists)
@@ -219,13 +221,13 @@ class Ui_Form(object):
 
         self.layout_board.addWidget(self.done)
 
-        self.widget = QWidget(self.project_page)
-        self.widget.setObjectName(u"widget")
-        self.widget.setGeometry(QRect(21, 30, 891, 31))
-        self.horizontalLayout_4 = QHBoxLayout(self.widget)
+        self.layoutWidget2 = QWidget(self.project_page)
+        self.layoutWidget2.setObjectName(u"layoutWidget2")
+        self.layoutWidget2.setGeometry(QRect(21, 30, 891, 31))
+        self.horizontalLayout_4 = QHBoxLayout(self.layoutWidget2)
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.list_name_text = QLabel(self.widget)
+        self.list_name_text = QLabel(self.layoutWidget2)
         self.list_name_text.setObjectName(u"list_name_text")
         self.list_name_text.setStyleSheet(u"color: #FFF;\n"
 "font-weight: 600;\n"
@@ -233,7 +235,7 @@ class Ui_Form(object):
 
         self.horizontalLayout_4.addWidget(self.list_name_text)
 
-        self.edit_list_btn = QPushButton(self.widget)
+        self.edit_list_btn = QPushButton(self.layoutWidget2)
         self.edit_list_btn.setObjectName(u"edit_list_btn")
         sizePolicy1.setHeightForWidth(self.edit_list_btn.sizePolicy().hasHeightForWidth())
         self.edit_list_btn.setSizePolicy(sizePolicy1)
@@ -241,20 +243,52 @@ class Ui_Form(object):
         self.horizontalLayout_4.addWidget(self.edit_list_btn)
 
         self.main_content.addWidget(self.project_page)
-        self.page_2 = QWidget()
-        self.page_2.setObjectName(u"page_2")
-        self.label_2 = QLabel(self.page_2)
-        self.label_2.setObjectName(u"label_2")
-        self.label_2.setGeometry(QRect(20, 10, 66, 91))
-        self.label_2.setStyleSheet(u"font: 48pt \"Ubuntu Sans\";")
-        self.main_content.addWidget(self.page_2)
+        self.no_lists_page = QWidget()
+        self.no_lists_page.setObjectName(u"no_lists_page")
+        self.verticalLayoutWidget = QWidget(self.no_lists_page)
+        self.verticalLayoutWidget.setObjectName(u"verticalLayoutWidget")
+        self.verticalLayoutWidget.setGeometry(QRect(40, 280, 851, 182))
+        self.no_lists_layout = QVBoxLayout(self.verticalLayoutWidget)
+        self.no_lists_layout.setSpacing(0)
+        self.no_lists_layout.setObjectName(u"no_lists_layout")
+        self.no_lists_layout.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
+        self.no_lists_layout.setContentsMargins(0, 0, 0, 0)
+        self.welcome_label = QLabel(self.verticalLayoutWidget)
+        self.welcome_label.setObjectName(u"welcome_label")
+        self.welcome_label.setMaximumSize(QSize(16777215, 100))
+        self.welcome_label.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
+        self.welcome_label.setStyleSheet(u"font: 48pt \"Google Sans\";\n"
+"font-weight: 500;")
+        self.welcome_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.no_lists_layout.addWidget(self.welcome_label)
+
+        self.welcome_label_2 = QLabel(self.verticalLayoutWidget)
+        self.welcome_label_2.setObjectName(u"welcome_label_2")
+        self.welcome_label_2.setMaximumSize(QSize(16777215, 100))
+        self.welcome_label_2.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
+        self.welcome_label_2.setStyleSheet(u"font: 20pt \"Google Sans\";")
+        self.welcome_label_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.no_lists_layout.addWidget(self.welcome_label_2)
+
+        self.main_screen_add_project_btn = QPushButton(self.verticalLayoutWidget)
+        self.main_screen_add_project_btn.setObjectName(u"main_screen_add_project_btn")
+        self.main_screen_add_project_btn.setMaximumSize(QSize(16777215, 16777215))
+        self.main_screen_add_project_btn.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
+        self.main_screen_add_project_btn.setAutoFillBackground(False)
+        self.main_screen_add_project_btn.setStyleSheet(u"")
+
+        self.no_lists_layout.addWidget(self.main_screen_add_project_btn)
+
+        self.main_content.addWidget(self.no_lists_page)
 
         self.horizontalLayout.addWidget(self.main_content)
 
 
         self.retranslateUi(Form)
 
-        self.main_content.setCurrentIndex(0)
+        self.main_content.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(Form)
@@ -262,9 +296,8 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.menu_add_task_btn.setText(QCoreApplication.translate("Form", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u0437\u0430\u0434\u0430\u0447\u0443", None))
-        self.my_lists_text.setText(QCoreApplication.translate("Form", u"\u041c\u043e\u0438 \u0441\u043f\u0438\u0441\u043a\u0438", None))
-        self.menu_add_list_btn.setText(QCoreApplication.translate("Form", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u0441\u043f\u0438\u0441\u043e\u043a", None))
+        self.menu_add_list_btn.setText(QCoreApplication.translate("Form", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u043f\u0440\u043e\u0435\u043a\u0442", None))
+        self.my_lists_text.setText(QCoreApplication.translate("Form", u"\u041c\u043e\u0438 \u043f\u0440\u043e\u0435\u043a\u0442\u044b", None))
         self.add_task_to_backlog.setText(QCoreApplication.translate("Form", u"+", None))
         self.backlog_text.setText(QCoreApplication.translate("Form", u"BACKLOG (0)", None))
         self.add_task_to_inprogress.setText(QCoreApplication.translate("Form", u"+", None))
@@ -272,7 +305,9 @@ class Ui_Form(object):
         self.add_task_to_done.setText(QCoreApplication.translate("Form", u"+", None))
         self.done_text_3.setText(QCoreApplication.translate("Form", u"DONE (0)", None))
         self.list_name_text.setText(QCoreApplication.translate("Form", u"\u0421\u043f\u0438\u0441\u043e\u043a 1", None))
-        self.edit_list_btn.setText(QCoreApplication.translate("Form", u"\u0420\u0435\u0434\u0430\u043a\u0442\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0441\u043f\u0438\u0441\u043e\u043a", None))
-        self.label_2.setText(QCoreApplication.translate("Form", u"2", None))
+        self.edit_list_btn.setText(QCoreApplication.translate("Form", u"\u0420\u0435\u0434\u0430\u043a\u0442\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u043f\u0440\u043e\u0435\u043a\u0442", None))
+        self.welcome_label.setText(QCoreApplication.translate("Form", u"\u0414\u043e\u0431\u0440\u043e \u043f\u043e\u0436\u0430\u043b\u043e\u0432\u0430\u0442\u044c!", None))
+        self.welcome_label_2.setText(QCoreApplication.translate("Form", u"\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u0441 \u0434\u043e\u0431\u0430\u0432\u043b\u0435\u043d\u0438\u044f \u043f\u0435\u0440\u0432\u043e\u0433\u043e \u043f\u0440\u043e\u0435\u043a\u0442\u0430", None))
+        self.main_screen_add_project_btn.setText(QCoreApplication.translate("Form", u"\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u043f\u0440\u043e\u0435\u043a\u0442", None))
     # retranslateUi
 

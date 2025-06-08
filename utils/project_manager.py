@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-class TaskManager:
+class ProjectManager:
     def __init__(self, json_path: str):
         self.json_file = Path(json_path)
 
@@ -98,3 +98,34 @@ class TaskManager:
                 self._save()
                 return task
         return None
+    
+    def add_project(self, project_name: str) -> dict | None:
+        max_id = 0
+        for project in self.data:
+            if project["id"] > max_id:
+                max_id = project["id"]
+        new_id = max_id + 1
+        project = {"id": new_id, "project_name": project_name, "project_columns": [
+            {"id": 1, "column_name": "Backlog", "tasks": []},
+            {"id": 2, "column_name": "In Progress", "tasks": []},
+            {"id": 3, "column_name": "Done", "tasks": []}
+        ]}
+        self.data.append(project)
+        self._save()
+        return project
+
+    def update_project(self, project_id: int, project_name: str) -> dict | None:
+        for project in self.data:
+            if project["id"] == project_id:
+                project["project_name"] = project_name
+                self._save()
+                return project
+        return None
+    
+    def delete_project(self, project_id: int) -> bool:
+        for idx, project in enumerate(self.data):
+            if project["id"] == project_id:
+                self.data.pop(idx)
+                self._save()
+                return True
+        return False

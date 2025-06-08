@@ -21,17 +21,42 @@ QScrollBar::sub-page:vertical {
   background: none;
 }
 
-#menu_add_task_btn {
+/* #menu_add_task_btn {
+  background-color: #4f46e5;
+  border-radius: 8px;
+  height: 40px;
+} */
+
+#menu_add_list_btn {
   background-color: #4f46e5;
   border-radius: 8px;
   height: 40px;
 }
 
-#menu_add_list_btn {
-  background-color: none;
+#main_screen_add_project_btn {
+  background-color: #4f46e5;
   border-radius: 8px;
   height: 40px;
+  min-width: 170px;
+  max-width: 170px;
+}
+
+#all_lists_area,
+#scrollAreaWidgetContents {
+  background-color: #1f2937;
+}
+
+#project_btn_not_selected {
+  background-color: transparent;
   border: 1px solid #4b5563;
+  height: 40px;
+  border-radius: 8px;
+}
+
+#project_btn_selected {
+  background-color: #4f46e5;
+  border-radius: 8px;
+  height: 40px;
 }
 
 #menu {

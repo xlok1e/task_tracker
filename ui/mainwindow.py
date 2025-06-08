@@ -1,7 +1,9 @@
 from PySide6.QtCore import Qt, QEvent
-from PySide6.QtWidgets import QMainWindow, QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QWidget, QSizePolicy, QTextEdit, QApplication
+from PySide6.QtWidgets import QMainWindow, QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QWidget, QSizePolicy, QTextEdit, QApplication, QMessageBox
 
-from utils.task_manager import TaskManager
+from ui.dialogs.add_project_dialog import AddProjectDialog
+from ui.dialogs.edit_project_dialog import EditProjectDialog
+from utils.project_manager import ProjectManager
 from .ui_mainwindow import Ui_Form
 from .task_card import TaskCard
 from .dialogs.add_or_edit_task_dialog import AddOrEditTaskDialog
@@ -19,20 +21,23 @@ class MainWindow(QMainWindow):
 
         self._setup_resizable_layout()
 
-        self.task_manager = TaskManager("models/main.json")
+        self.task_manager = ProjectManager("models/main.json")
+        self.project = None
 
-        if self.task_manager.data:
+        if self.task_manager.data and len(self.task_manager.data) > 0:
             self.project = self.task_manager.data[0]
             self._update_header()
+            self.ui.main_content.setCurrentIndex(0)
         else:
-            # todo Тут надо выводить экран без проектов
-            print('No projects')
+            self.ui.main_content.setCurrentIndex(1)
 
         self._setup_ui()
         self._setup_events()
         self._setup_drag_drop()
+        self._populate_projects_list()
 
-        self._populate_tasks()
+        if self.project:
+            self._populate_tasks()
 
     def _setup_resizable_layout(self):
         central_widget = QWidget()
@@ -42,7 +47,44 @@ class MainWindow(QMainWindow):
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
 
-        main_layout.addWidget(self.ui.menu)
+        menu_widget = QWidget()
+        menu_widget.setObjectName("menu")
+        menu_widget.setMinimumWidth(250)
+        menu_widget.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
+        
+        menu_layout = QVBoxLayout(menu_widget)
+        menu_layout.setContentsMargins(0, 0, 0, 0)
+        menu_layout.setSpacing(24)
+        
+        top_buttons = QWidget()
+        top_buttons_layout = QVBoxLayout(top_buttons)
+        top_buttons_layout.setContentsMargins(12, 12, 12, 12)
+        top_buttons_layout.setSpacing(8)
+        top_buttons_layout.addWidget(self.ui.menu_add_list_btn)
+        menu_layout.addWidget(top_buttons)
+        
+        projects_widget = QWidget()
+        projects_layout = QVBoxLayout(projects_widget)
+        projects_layout.setContentsMargins(12, 12, 12, 12)
+        projects_layout.setSpacing(12)
+        
+        projects_layout.addWidget(self.ui.my_lists_text)
+        
+        self.ui.all_lists_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.ui.all_lists_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.ui.all_lists_area.setStyleSheet("QScrollArea { border: none; }")
+        self.ui.all_lists_area.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        
+        self.ui.scrollAreaWidgetContents.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        scroll_layout = QVBoxLayout(self.ui.scrollAreaWidgetContents)
+        scroll_layout.setContentsMargins(0, 0, 0, 0)
+        scroll_layout.setSpacing(8)
+        scroll_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        
+        projects_layout.addWidget(self.ui.all_lists_area)
+        menu_layout.addWidget(projects_widget, 1)
+        
+        main_layout.addWidget(menu_widget)
         main_layout.addWidget(self.ui.main_content)
 
         project_layout = QVBoxLayout()
@@ -50,7 +92,7 @@ class MainWindow(QMainWindow):
         project_layout.setSpacing(20)
         self.ui.project_page.setLayout(project_layout)
 
-        project_layout.addWidget(self.ui.widget)
+        project_layout.addWidget(self.ui.layoutWidget2)
 
         board_container = QWidget()
         board_container.setLayout(self.ui.layout_board)
@@ -104,10 +146,35 @@ class MainWindow(QMainWindow):
         self.todo_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.done_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
+        layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addStretch()
+        layout.addWidget(self.ui.verticalLayoutWidget, 0, Qt.AlignmentFlag.AlignCenter)
+        layout.addStretch()
+        self.ui.no_lists_page.setLayout(layout)
+
+        self.ui.no_lists_layout.setSpacing(20)
+        
+        self.ui.no_lists_layout.insertSpacing(2, 10)
+
+        button_container = QWidget(self.ui.verticalLayoutWidget)
+        button_layout = QHBoxLayout(button_container)
+        button_layout.setContentsMargins(0, 0, 0, 0)
+        button_layout.addStretch()
+        button_layout.addWidget(self.ui.main_screen_add_project_btn)
+        button_layout.addStretch()
+
+        self.ui.no_lists_layout.removeWidget(self.ui.main_screen_add_project_btn)
+        self.ui.no_lists_layout.addWidget(button_container)
+
     def _setup_events(self):
         self.ui.add_task_to_backlog.clicked.connect(self.add_new_task_to_backlog)
         self.ui.add_task_to_inprogress.clicked.connect(self.add_new_task_to_todo)
         self.ui.add_task_to_done.clicked.connect(self.add_new_task_to_done)
+
+        self.ui.edit_list_btn.clicked.connect(self.open_edit_project_dialog)
+        self.ui.main_screen_add_project_btn.clicked.connect(self.open_add_project_dialog)
+        self.ui.menu_add_list_btn.clicked.connect(self.open_add_project_dialog)
 
     def _setup_drag_drop(self):
         self.ui.column_backlog.setAcceptDrops(True)
@@ -134,7 +201,6 @@ class MainWindow(QMainWindow):
     def remove_task(self, task_id, column_id):
         removed = self.task_manager.remove_task(self.project["id"], column_id, task_id)
         if removed:
-            # Получаем колонку и её layout
             column = None
             if column_id == 1:
                 column = self.ui.column_backlog
@@ -144,22 +210,18 @@ class MainWindow(QMainWindow):
                 column = self.ui.column_done
 
             if column:
-                # Очищаем layout
                 layout = column.layout()
                 if layout:
-                    # Удаляем все виджеты из layout
                     while layout.count():
                         item = layout.takeAt(0)
                         if item.widget():
                             item.widget().deleteLater()
                     
-                    # Пересоздаем все задачи в колонке
                     for task in self.task_manager.get_column(self.project["id"], column_id)["tasks"]:
                         card = self.add_task_to_layout(layout, task["task_name"], task["description"], task["priority"], task["date"])
                         card.task_id = task["id"]
                         card.column_id = column_id
                     
-                    # Обновляем интерфейс
                     layout.update()
                     column.update()
                     self.update()
@@ -282,3 +344,99 @@ class MainWindow(QMainWindow):
                     if layout:
                         layout.removeWidget(source_widget)
                         source_widget.deleteLater()
+
+    def open_edit_project_dialog(self):
+        dialog = EditProjectDialog(self, self.project["project_name"], self.project["id"])
+
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            new_name = dialog.name_field.text().strip()
+            if new_name:
+                self.project["project_name"] = new_name
+                self.task_manager.update_project(self.project["id"], new_name)
+                self._update_header()
+
+    def open_add_project_dialog(self):
+        dialog = AddProjectDialog(self)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            new_name = dialog.project_name
+            if new_name:
+                self.task_manager.add_project(new_name)
+                self._populate_projects_list()
+                self._switch_project(self.task_manager.data[-1])
+
+    def _populate_projects_list(self):
+        if not self.ui.scrollAreaWidgetContents.layout():
+            layout = QVBoxLayout(self.ui.scrollAreaWidgetContents)
+            layout.setSpacing(8)
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        else:
+            layout = self.ui.scrollAreaWidgetContents.layout()
+            while layout.count():
+                item = layout.takeAt(0)
+                if item.widget():
+                    item.widget().deleteLater()
+
+        for project in self.task_manager.data:
+            btn = QPushButton(project["project_name"][:20] + "..." if len(project["project_name"]) > 20 else project["project_name"])
+            btn.setObjectName(f"project_btn_{project['id']}")
+            btn.setProperty("project_id", project["id"])
+            btn.setCursor(Qt.CursorShape.PointingHandCursor)
+            btn.clicked.connect(lambda checked, p=project: self._switch_project(p))
+            
+            is_selected = project["id"] == self.project["id"]
+            btn.setProperty("is_selected", is_selected)
+            btn.setStyleSheet(self._get_project_button_style(is_selected))
+            layout.addWidget(btn)
+
+    def _get_project_button_style(self, is_selected):
+        base_style = """
+            QPushButton {
+                text-align: left;
+                padding-left: 8px;
+                border: none;
+                border-radius: 8px;
+                height: 40px;
+            }
+        """
+        
+        if is_selected:
+            return base_style + """
+                QPushButton {
+                    background-color: #4f46e5;
+                    border: 1px solid transparent;
+                    border-radius: 8px;
+                    height: 40px;
+                }
+                QPushButton:hover {
+                    background-color: #1D4ED8;
+                }
+            """
+        else:
+            return base_style + """
+                QPushButton {
+                    background-color: transparent;
+                    border: 1px solid #4b5563;
+                    height: 40px;
+                    border-radius: 8px;
+                }
+                QPushButton:hover {
+                    background-color: #374151;
+                    color: white;
+                }
+            """
+
+    def _switch_project(self, project):
+        self.project = project
+        self._update_header()
+        self._clear_all_columns()
+        self._populate_tasks()
+        self._populate_projects_list()
+        self.ui.main_content.setCurrentIndex(0)
+
+    def _clear_all_columns(self):
+        for layout in [self.backlog_layout, self.todo_layout, self.done_layout]:
+            while layout.count():
+                item = layout.takeAt(0)
+                if item.widget():
+                    item.widget().deleteLater()
