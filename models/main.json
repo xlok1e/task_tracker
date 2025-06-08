@@ -28,13 +28,6 @@
         "column_name": "In Progress",
         "tasks": [
           {
-            "id": 17,
-            "task_name": "213",
-            "description": "",
-            "priority": 0,
-            "date": "2025-06-08"
-          },
-          {
             "id": 16,
             "task_name": "Проверить разработку странцы заказов",
             "description": "",
@@ -46,15 +39,7 @@
       {
         "id": 3,
         "column_name": "Done",
-        "tasks": [
-          {
-            "id": 15,
-            "task_name": "Встретиться с Викторией",
-            "description": "Улица Пушкина дом Колотушкина 52",
-            "priority": 0,
-            "date": "2025-06-04"
-          }
-        ]
+        "tasks": []
       }
     ]
   }

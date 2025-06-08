@@ -1,10 +1,10 @@
 from PySide6.QtCore import Qt, QEvent
-from PySide6.QtWidgets import QMainWindow, QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QWidget, QSizePolicy, QTextEdit
+from PySide6.QtWidgets import QMainWindow, QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QWidget, QSizePolicy, QTextEdit, QApplication
 
 from utils.task_manager import TaskManager
 from .ui_mainwindow import Ui_Form
 from .task_card import TaskCard
-from .dialogs.add_task_dialog import AddTaskDialog
+from .dialogs.add_or_edit_task_dialog import AddOrEditTaskDialog
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -65,17 +65,17 @@ class MainWindow(QMainWindow):
         self.ui.list_name_text.setText(name)
 
     def _populate_tasks(self):
-            for col in self.project['project_columns']:
-                col_id = col['id']
+        for col in self.project['project_columns']:
+            col_id = col['id']
 
-                layout = self._get_layout_by_column_id(col_id)
-                if layout is None:
-                    continue
+            layout = self._get_layout_by_column_id(col_id)
+            if layout is None:
+                continue
 
-                for task in col['tasks']:
-                    card = self.add_task_to_layout(layout, task['task_name'], task['description'], task['priority'], task['date'])
-                    setattr(card, 'task_id', task['id'])
-                    setattr(card, 'column_id', col_id)
+            for task in col['tasks']:
+                card = self.add_task_to_layout(layout, task['task_name'], task['description'], task['priority'], task['date'])
+                card.task_id = task['id']
+                card.column_id = col_id
 
     def _get_layout_by_column_id(self, col_id):
         if col_id == 1:
@@ -122,6 +122,47 @@ class MainWindow(QMainWindow):
         task = TaskCard(text, description, priority, date)
         layout.addWidget(task)
         return task
+    
+    def _remove_task_from_layout(self, layout, task_id):
+        for widget in layout.children():
+            if isinstance(widget, TaskCard) and widget.task_id == task_id:
+                widget.setParent(None)
+                widget.deleteLater()
+                return True
+        return False
+
+    def remove_task(self, task_id, column_id):
+        removed = self.task_manager.remove_task(self.project["id"], column_id, task_id)
+        if removed:
+            # Получаем колонку и её layout
+            column = None
+            if column_id == 1:
+                column = self.ui.column_backlog
+            elif column_id == 2:
+                column = self.ui.column_todo
+            elif column_id == 3:
+                column = self.ui.column_done
+
+            if column:
+                # Очищаем layout
+                layout = column.layout()
+                if layout:
+                    # Удаляем все виджеты из layout
+                    while layout.count():
+                        item = layout.takeAt(0)
+                        if item.widget():
+                            item.widget().deleteLater()
+                    
+                    # Пересоздаем все задачи в колонке
+                    for task in self.task_manager.get_column(self.project["id"], column_id)["tasks"]:
+                        card = self.add_task_to_layout(layout, task["task_name"], task["description"], task["priority"], task["date"])
+                        card.task_id = task["id"]
+                        card.column_id = column_id
+                    
+                    # Обновляем интерфейс
+                    layout.update()
+                    column.update()
+                    self.update()
 
     def add_new_task_to_backlog(self):
         self._add_new_task(self.backlog_layout, column_id=1)
@@ -133,7 +174,7 @@ class MainWindow(QMainWindow):
         self._add_new_task(self.done_layout, column_id=3)
 
     def _add_new_task(self, layout, column_id: int):
-        dialog = AddTaskDialog(self)
+        dialog = AddOrEditTaskDialog(self)
 
         if dialog.exec() != QDialog.DialogCode.Accepted:
             return

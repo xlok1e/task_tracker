@@ -17,9 +17,12 @@ class TaskCard(QWidget):
             self.setMinimumWidth(200)
             self.setMaximumHeight(100)
             self.is_dragging = False
+            self.task_id = None
+            self.column_id = None
 
             layout = QVBoxLayout()
             layout.setContentsMargins(25, 25, 25, 20)
+            layout.setSpacing(4)
 
             header_layout = QHBoxLayout()
             header_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
@@ -30,7 +33,8 @@ class TaskCard(QWidget):
             self.title_label.setObjectName("task_card_title")
             self.title_label.setWordWrap(False)
 
-            self.priority_label = QLabel(f"{self.getPriority(priority)}")
+            priority_text = self.getPriority(priority)
+            self.priority_label = QLabel(priority_text)
             self.priority_label.setObjectName("task_card_priority")
             self.priority_label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
             self.priority_label.setStyleSheet(f"""
@@ -47,25 +51,28 @@ class TaskCard(QWidget):
             self.date_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
             self.date_label.setStyleSheet("""
                 color: #9CA3AF;
+                padding-top: 4px;
+                margin-left: -4px;
             """)
 
             header_layout.addWidget(self.title_label)
             header_layout.addStretch(1)
             header_layout.addWidget(self.priority_label)           
 
-            short_description = self._trim_text(description, 65)
-            self.description_label = QTextEdit(short_description or 'Описание не задано')
+            short_description = self._trim_text(description, 60)
+            self.description_label = QLabel(short_description or 'Описание не задано')
             self.description_label.setObjectName("task_card_description")
-            self.description_label.setReadOnly(True)
-            self.description_label.setFrameShape(QTextEdit.Shape.NoFrame)
-            self.description_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
-            self.description_label.setTextInteractionFlags(Qt.TextInteractionFlag.NoTextInteraction)
-            self.description_label.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-            self.description_label.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-            self.description_label.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-            self.description_label.document().setDocumentMargin(0)
-            size_policy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-            self.description_label.setSizePolicy(size_policy)
+            self.description_label.setWordWrap(False)
+            self.description_label.setStyleSheet("""
+                color: #9CA3AF;
+                font-weight: 500;
+                font-size: 14px;
+                padding: 0;
+                margin: 0;
+                padding-top: 6px;
+                margin-left: -4px;
+                                                 
+            """)
 
             layout.addLayout(header_layout)
             layout.addWidget(self.description_label)
@@ -179,5 +186,13 @@ class TaskCard(QWidget):
             return date
         
     def show_task_info(self):
-        dialog = TaskInfoDialog(self, self._original_title, self._original_description, self.priority_label.text(), self.date_label.text())
+        dialog = TaskInfoDialog(
+            self, 
+            self._original_title, 
+            self._original_description, 
+            self.priority_value, 
+            self.date_value,
+            self.task_id,
+            self.column_id
+        )
         dialog.exec()

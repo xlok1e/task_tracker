@@ -71,3 +71,30 @@ class TaskManager:
                 self._save()
                 return True
         return False
+    
+    def remove_task(self, project_id: int, column_id: int, task_id: int) -> bool:
+        col = self.get_column(project_id, column_id)
+        if col is None:
+            return False
+        
+        for idx, t in enumerate(col["tasks"]):
+            if t["id"] == task_id:
+                col["tasks"].pop(idx)
+                self._save()
+                return True
+        return False
+
+    def update_task(self, project_id: int, column_id: int, task_id: int, task_name: str, description: str, priority: int, date: str) -> dict | None:
+        col = self.get_column(project_id, column_id)
+        if col is None:
+            return None
+        
+        for task in col["tasks"]:
+            if task["id"] == task_id:
+                task["task_name"] = task_name
+                task["description"] = description
+                task["priority"] = priority
+                task["date"] = date
+                self._save()
+                return task
+        return None
