@@ -118,6 +118,7 @@ class MainWindow(QMainWindow):
                 card = self.add_task_to_layout(layout, task['task_name'], task['description'], task['priority'], task['date'])
                 card.task_id = task['id']
                 card.column_id = col_id
+        self._update_column_counts()
 
     def _get_layout_by_column_id(self, col_id):
         if col_id == 1:
@@ -188,6 +189,7 @@ class MainWindow(QMainWindow):
     def add_task_to_layout(self, layout, text: str, description: str, priority: int, date: str):
         task = TaskCard(text, description, priority, date)
         layout.addWidget(task)
+        self._update_column_counts()
         return task
     
     def _remove_task_from_layout(self, layout, task_id):
@@ -196,6 +198,7 @@ class MainWindow(QMainWindow):
                 widget.setParent(None)
                 widget.deleteLater()
                 return True
+        self._update_column_counts()
         return False
 
     def remove_task(self, task_id, column_id):
@@ -298,6 +301,8 @@ class MainWindow(QMainWindow):
             )
             if not moved:
                 return super().eventFilter(watched, event)
+            if moved:
+                self._update_column_counts()
 
             target_layout = self._get_layout_by_column_id(target_column)
             new_card = self.add_task_to_layout(
@@ -425,6 +430,13 @@ class MainWindow(QMainWindow):
                     color: white;
                 }
             """
+        
+    def _update_column_counts(self):
+        counts = {col['id']: len(col.get('tasks', [])) for col in self.project['project_columns']}
+
+        self.ui.backlog_text.setText(f"BACKLOG ({counts.get(1, 0)})")
+        self.ui.inprogress_text.setText(f"TODO ({counts.get(2, 0)})")
+        self.ui.done_text_3.setText(f"DONE ({counts.get(3, 0)})")    
 
     def _switch_project(self, project):
         self.project = project

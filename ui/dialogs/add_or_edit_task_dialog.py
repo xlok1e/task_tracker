@@ -58,6 +58,12 @@ class AddOrEditTaskDialog(QDialog):
             QDialogButtonBox.StandardButton.Save | QDialogButtonBox.StandardButton.Cancel, self
         )
 
+        save_btn = self.button_box.button(QDialogButtonBox.StandardButton.Save)
+        save_btn.setText("Сохранить")
+
+        cancel_btn = self.button_box.button(QDialogButtonBox.StandardButton.Cancel)
+        cancel_btn.setText("Отмена")
+
         self.button_box.accepted.connect(self.validate_and_accept)
         self.button_box.rejected.connect(self.reject)
         layout.addWidget(self.button_box)
