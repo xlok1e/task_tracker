@@ -26,7 +26,7 @@ This project was developed as part of a 2nd year college internship at Vyatka St
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/task_tracker.git
+git clone https://github.com/xlok1e/task_tracker.git
 cd task_tracker
 ```
 
@@ -56,7 +56,7 @@ python main.py
 task_tracker/
 ├── models/          # Data storage (JSON files)
 ├── resources/       # UI resources and stylesheets
-│		├── styles.qss   # Stylesheet for UI components
+│	└── styles.qss   # Stylesheet for UI components
 ├── ui/              # User interface components
 │   ├── dialogs/     # Dialog windows
 │   └── resources/   # UI resources and stylesheets
