@@ -1,12 +1,25 @@
-from PySide6.QtCore import Qt, QEvent
-from PySide6.QtWidgets import QMainWindow, QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QWidget, QSizePolicy, QTextEdit, QApplication, QMessageBox
+from PySide6.QtCore import QEvent, Qt
+from PySide6.QtWidgets import (
+    QApplication,
+    QDialog,
+    QHBoxLayout,
+    QMainWindow,
+    QMessageBox,
+    QPushButton,
+    QSizePolicy,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
 
 from ui.dialogs.add_project_dialog import AddProjectDialog
 from ui.dialogs.edit_project_dialog import EditProjectDialog
 from utils.project_manager import ProjectManager
-from .ui_mainwindow import Ui_Form
-from .task_card import TaskCard
+
 from .dialogs.add_or_edit_task_dialog import AddOrEditTaskDialog
+from .task_card import TaskCard
+from .ui_mainwindow import Ui_Form
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -51,39 +64,39 @@ class MainWindow(QMainWindow):
         menu_widget.setObjectName("menu")
         menu_widget.setMinimumWidth(250)
         menu_widget.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
-        
+
         menu_layout = QVBoxLayout(menu_widget)
         menu_layout.setContentsMargins(0, 0, 0, 0)
         menu_layout.setSpacing(24)
-        
+
         top_buttons = QWidget()
         top_buttons_layout = QVBoxLayout(top_buttons)
         top_buttons_layout.setContentsMargins(12, 12, 12, 12)
         top_buttons_layout.setSpacing(8)
         top_buttons_layout.addWidget(self.ui.menu_add_list_btn)
         menu_layout.addWidget(top_buttons)
-        
+
         projects_widget = QWidget()
         projects_layout = QVBoxLayout(projects_widget)
         projects_layout.setContentsMargins(12, 12, 12, 12)
         projects_layout.setSpacing(12)
-        
+
         projects_layout.addWidget(self.ui.my_lists_text)
-        
+
         self.ui.all_lists_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.ui.all_lists_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.ui.all_lists_area.setStyleSheet("QScrollArea { border: none; }")
         self.ui.all_lists_area.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        
+
         self.ui.scrollAreaWidgetContents.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         scroll_layout = QVBoxLayout(self.ui.scrollAreaWidgetContents)
         scroll_layout.setContentsMargins(0, 0, 0, 0)
         scroll_layout.setSpacing(8)
         scroll_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-        
+
         projects_layout.addWidget(self.ui.all_lists_area)
         menu_layout.addWidget(projects_widget, 1)
-        
+
         main_layout.addWidget(menu_widget)
         main_layout.addWidget(self.ui.main_content)
 
@@ -155,7 +168,7 @@ class MainWindow(QMainWindow):
         self.ui.no_lists_page.setLayout(layout)
 
         self.ui.no_lists_layout.setSpacing(20)
-        
+
         self.ui.no_lists_layout.insertSpacing(2, 10)
 
         button_container = QWidget(self.ui.verticalLayoutWidget)
@@ -191,7 +204,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(task)
         self._update_column_counts()
         return task
-    
+
     def _remove_task_from_layout(self, layout, task_id):
         for widget in layout.children():
             if isinstance(widget, TaskCard) and widget.task_id == task_id:
@@ -219,12 +232,12 @@ class MainWindow(QMainWindow):
                         item = layout.takeAt(0)
                         if item.widget():
                             item.widget().deleteLater()
-                    
+
                     for task in self.task_manager.get_column(self.project["id"], column_id)["tasks"]:
                         card = self.add_task_to_layout(layout, task["task_name"], task["description"], task["priority"], task["date"])
                         card.task_id = task["id"]
                         card.column_id = column_id
-                    
+
                     layout.update()
                     column.update()
                     self.update()
@@ -388,8 +401,8 @@ class MainWindow(QMainWindow):
             btn.setProperty("project_id", project["id"])
             btn.setCursor(Qt.CursorShape.PointingHandCursor)
             btn.clicked.connect(lambda checked, p=project: self._switch_project(p))
-            
-            is_selected = project["id"] == self.project["id"]
+
+            is_selected = self.project is not None and project["id"] == self.project["id"]
             btn.setProperty("is_selected", is_selected)
             btn.setStyleSheet(self._get_project_button_style(is_selected))
             layout.addWidget(btn)
@@ -404,7 +417,7 @@ class MainWindow(QMainWindow):
                 height: 40px;
             }
         """
-        
+
         if is_selected:
             return base_style + """
                 QPushButton {
@@ -430,13 +443,13 @@ class MainWindow(QMainWindow):
                     color: white;
                 }
             """
-        
+
     def _update_column_counts(self):
         counts = {col['id']: len(col.get('tasks', [])) for col in self.project['project_columns']}
 
         self.ui.backlog_text.setText(f"BACKLOG ({counts.get(1, 0)})")
         self.ui.inprogress_text.setText(f"TODO ({counts.get(2, 0)})")
-        self.ui.done_text_3.setText(f"DONE ({counts.get(3, 0)})")    
+        self.ui.done_text_3.setText(f"DONE ({counts.get(3, 0)})")
 
     def _switch_project(self, project):
         self.project = project
